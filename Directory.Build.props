@@ -1,0 +1,14 @@
+<Project>
+    <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+    <PropertyGroup>
+        <Authors>Frank R. Haugen</Authors>
+        <PublisherName>Frank R. Haugen</PublisherName>
+        <Copyright>Copyright (c) 2023 Frank R. Haugen</Copyright>
+        <Description>Simple installer for .NET Core console applications.</Description>
+        
+        <RepositoryUrl>https://www.github.com/frankhaugen/Frank.SimpleInstaller</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+
+</Project>

@@ -1,5 +1,3 @@
-using System.IO.Compression;
-
 namespace Frank.SimpleInstaller;
 
 public interface IPackingService

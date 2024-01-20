@@ -2,30 +2,11 @@
 
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        
-        <IsPackable>true</IsPackable>
+        <Description>Simple installer for .NET Core console applications. Built with Spectre.Console.</Description>
         <PackageTags>Simple, Installer, Console, Spectre, Windows, .NET, .NET Core, .NET 8</PackageTags>
-
-        <PackageReadmeFile>readme.md</PackageReadmeFile>
-        <PackageIcon>icon.png</PackageIcon>
-        
-        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://www.github.com/frankhaugen/Frank.SimpleInstaller</PackageProjectUrl>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
         <PackageReference Include="Spectre.Console" Version="0.48.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="../readme.md" Pack="true" PackagePath="\"/>
-        <None Include="../icon.png" Pack="true" PackagePath="\"/>
-        <InternalsVisibleTo Include="$(AssemblyName).Tests"/>
-        <InternalsVisibleTo Include="LINQPadQuery"/>
     </ItemGroup>
 </Project>

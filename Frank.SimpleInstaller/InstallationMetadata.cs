@@ -39,5 +39,5 @@ public class InstallationMetadata
         return JsonSerializer.Deserialize<InstallationMetadata>(metadataStream, JsonSerializerOptions);
     }
 
-    private static JsonSerializerOptions JsonSerializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true, Converters = { new JsonStringEnumConverter() } };
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true, Converters = { new JsonStringEnumConverter() } };
 }

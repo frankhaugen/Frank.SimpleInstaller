@@ -1,12 +1,16 @@
 ﻿using System.Diagnostics;
 
-namespace Frank.SimpleInstaller;
+using Spectre.Console;
 
-public class ShortcutTool
+using OperatingSystem = Frank.SimpleInstaller.Models.OperatingSystem;
+
+namespace Frank.SimpleInstaller.Helpers;
+
+public static class ShortcutHelper
 {
     public static void CreateShortcut(FileInfo originalFilePath, FileInfo linkPath)
     {
-        switch (OperatingSystemDetector.GetOperatingSystem())
+        switch (OperatingSystemHelper.GetOperatingSystem())
         {
             case OperatingSystem.Windows:
                 CreateWindowsShortcut(originalFilePath, linkPath);
@@ -17,8 +21,9 @@ public class ShortcutTool
             case OperatingSystem.Linux:
                 CreateLinuxSymbolicLink(originalFilePath, linkPath);
                 break;
+            case OperatingSystem.Unknown:
             default:
-                throw new NotSupportedException("Unsupported operating system.");
+                break;
         }
     }
 
@@ -83,11 +88,11 @@ public class ShortcutTool
         
         if (process.ExitCode != 0)
         {
-            Console.WriteLine($"Failed to create shortcut. Exit code: {process.ExitCode}. Output: {output}");
+            AnsiConsole.WriteLine($"Failed to create shortcut. Exit code: {process.ExitCode}. Output: {output}");
         }
         else
         {
-            Console.WriteLine("Shortcut created successfully.");
+            AnsiConsole.WriteLine("Shortcut created successfully.");
         }
     }
 }

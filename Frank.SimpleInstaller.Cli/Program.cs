@@ -1,26 +1,35 @@
-﻿using Frank.SimpleInstaller;
+﻿using System.Reflection;
+
+using Frank.SimpleInstaller;
+using Frank.SimpleInstaller.Cli.Actions;
+using Frank.SimpleInstaller.Cli.Commands;
+using Frank.SimpleInstaller.Cli.DependencyInjection;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Spectre.Console;
+using Spectre.Console.Cli;
+
+AnsiConsole.Profile.Encoding = System.Text.Encoding.UTF8;
+
 var services = new ServiceCollection();
 
-services.AddSingleton<IInstallationService, InstallationService>();
-services.AddSingleton<IPackingService, PackingService>();
-services.AddSingleton<ISimpleInstallerService, SimpleInstallerService>();
+services.AddSingleton<IAction, InstallAction>();
+services.AddSingleton<IAction, PackAction>();
+services.AddSingleton<IAction, UninstallAction>();
+services.AddSingleton<IAction, ExitAction>();
 
-var serviceProvider = services.BuildServiceProvider();
-var simpleInstallerService = serviceProvider.GetRequiredService<ISimpleInstallerService>();
-var rootDirectory = new DirectoryInfo(AppContext.BaseDirectory);
+var registrar = new TypeRegistrar(services);
 
-try
+var app = new CommandApp(registrar);
+
+app.Configure(config =>
 {
-    simpleInstallerService.Run(rootDirectory);
-}
-catch (Exception e)
-{
-    Console.WriteLine("An error occurred:");
-    Console.WriteLine(e);
-}
+    config.AddCommand<PackCommand>("pack");
+    config.AddCommand<InstallCommand>("install");
+    config.AddCommand<UninstallCommand>("uninstall");
+});
 
-Console.WriteLine("Press any key to exit...");
-Console.ReadKey();
+app.SetDefaultCommand<MenuCommand>();
+
+await app.RunAsync(args);

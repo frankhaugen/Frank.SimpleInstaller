@@ -1,4 +1,4 @@
-namespace Frank.SimpleInstaller;
+namespace Frank.SimpleInstaller.Models;
 
 public enum OperatingSystem
 {

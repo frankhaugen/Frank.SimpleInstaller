@@ -1,12 +1,18 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Frank.SimpleInstaller;
+namespace Frank.SimpleInstaller.Helpers;
 
-public static class DirectoryTool
+public static class DirectoryHelper
 {
+    public static DirectoryInfo GetBaseDirectory()
+    {
+        var rootDirectory = new DirectoryInfo(AppContext.BaseDirectory);
+        return rootDirectory;
+    }
+    
     public static List<string> GetApps(DirectoryInfo rootDirectory)
     {
-        DirectoryInfo? appsDirectory = new DirectoryInfo(Path.Combine(rootDirectory.FullName, Constants.AppSourceFolderName));
+        DirectoryInfo appsDirectory = new DirectoryInfo(Path.Combine(rootDirectory.FullName, Constants.AppSourceFolderName));
         
         if (!appsDirectory.Exists)
             return new List<string>();

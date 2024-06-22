@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Frank.SimpleInstaller;
+namespace Frank.SimpleInstaller.Models;
 
 public class InstallationMetadata
 {

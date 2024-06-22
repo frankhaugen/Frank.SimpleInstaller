@@ -1,10 +1,43 @@
 using System.IO.Compression;
 
-namespace Frank.SimpleInstaller;
+using Frank.SimpleInstaller.Models;
 
-public class InstallationService : IInstallationService
+using Spectre.Console;
+
+namespace Frank.SimpleInstaller.Helpers;
+
+public static class InstallationHelper
 {
-    public bool Install(FileInfo installerFile)
+    public static bool Uninstall(string appName)
+    {
+        var startMenuDirectory = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)));
+        var startMenuProgramsDirectory = new DirectoryInfo(Path.Combine(startMenuDirectory.FullName, "Programs"));
+        
+        AnsiConsole.WriteLine($"Removing start menu shortcuts for '{appName}'");
+        
+        var appFolder = startMenuProgramsDirectory.GetDirectories(appName);
+        
+        if (appFolder.Length == 0)
+        {
+            AnsiConsole.WriteLine($"No start menu shortcuts found for '{appName}'");
+        }
+        else
+        {
+            foreach (var folder in appFolder)
+            {
+                folder.Delete(true);
+            }
+        }
+
+        return true;
+    }
+
+    public static bool Install(string appName, Version version)
+    {
+        return Install(new FileInfo(Path.Combine(AppContext.BaseDirectory, Constants.AppSourceFolderName, $"{appName}.{version}.zip")));
+    }
+    
+    public static bool Install(FileInfo installerFile)
     {
         using ZipArchive zip = ZipFile.Open(installerFile.FullName, ZipArchiveMode.Read);
 
@@ -34,7 +67,7 @@ public class InstallationService : IInstallationService
         {
             var sourceEntryPath = zipSourceDirectoryEntry.FullName.Replace(Constants.SourceFolderName, string.Empty).TrimStart('\\');
             string destinationPath = Path.Combine(installationDirectory.FullName, sourceEntryPath);
-            Console.WriteLine($"Extracting '{zipSourceDirectoryEntry.FullName}' to '{destinationPath}'");
+            AnsiConsole.WriteLine($"Extracting '{zipSourceDirectoryEntry.FullName}' to '{destinationPath}'");
             zipSourceDirectoryEntry.ExtractToFile(destinationPath, true);
 
             if (zipSourceDirectoryEntry.FullName.EndsWith(".exe"))
@@ -47,20 +80,20 @@ public class InstallationService : IInstallationService
 
         if (startMenuShortcut.Exists)
         {
-            Console.WriteLine($"Removing existing shortcut '{startMenuShortcut.FullName}'");
+            AnsiConsole.WriteLine($"Removing existing shortcut '{startMenuShortcut.FullName}'");
             startMenuShortcut.Delete();
         }
 
         FileInfo startMenuShortcutTarget = new FileInfo(Path.Combine(installationDirectory.FullName, Constants.SourceFolderName, exexutable.FullName));
 
-        Console.WriteLine($"Creating shortcut '{startMenuShortcut.FullName}' to '{startMenuShortcutTarget.FullName}'");
+        AnsiConsole.WriteLine($"Creating shortcut '{startMenuShortcut.FullName}' to '{startMenuShortcutTarget.FullName}'");
 
-        ShortcutTool.CreateShortcut(startMenuShortcutTarget, startMenuShortcut);
+        ShortcutHelper.CreateShortcut(startMenuShortcutTarget, startMenuShortcut);
 
         return true;
     }
 
-    private IEnumerable<ZipArchiveEntry> GetZipSourceDirectory(ZipArchive zipArchive)
+    private static IEnumerable<ZipArchiveEntry> GetZipSourceDirectory(ZipArchive zipArchive)
     {
         List<ZipArchiveEntry>? sourceEntry = zipArchive.Entries.Where(x => x.FullName.StartsWith(Constants.SourceFolderName)).ToList();
         if (sourceEntry is null || !sourceEntry.Any())
@@ -71,7 +104,7 @@ public class InstallationService : IInstallationService
         return sourceEntry;
     }
 
-    private DirectoryInfo GetStartMenuDirectory(InstallationMetadata metadata)
+    private static DirectoryInfo GetStartMenuDirectory(InstallationMetadata metadata)
     {
         string startMenuPath = Environment.GetFolderPath(Environment.SpecialFolder.StartMenu);
         string companyFolderName = string.IsNullOrWhiteSpace(metadata.Company) ? "" : Path.Combine(startMenuPath, metadata.Company);
@@ -85,7 +118,7 @@ public class InstallationService : IInstallationService
         if (metadata.Company is not null)
         {
             var companyDirectory = new DirectoryInfo(Path.Combine(startMenuProgramsDirectory.FullName, metadata.Company));
-            Console.WriteLine($"Creating company folder '{companyDirectory.FullName}'");
+            AnsiConsole.WriteLine($"Creating company folder '{companyDirectory.FullName}'");
             companyDirectory.Create();
             appFolderDirectory = companyDirectory;
         }
@@ -98,39 +131,29 @@ public class InstallationService : IInstallationService
     }
 
 
-    private DirectoryInfo GetInstallationDirectory(InstallationMetadata metadata)
+    private static DirectoryInfo GetInstallationDirectory(InstallationMetadata metadata)
     {
         DirectoryInfo programDataDirectory = GetProgramDataDirectory();
         string folderName = metadata.SafeName ?? metadata.Name;
         DirectoryInfo installationDirectory = new DirectoryInfo(Path.Combine(programDataDirectory.FullName, folderName));
         if (!installationDirectory.Exists)
         {
-            Console.WriteLine($"Creating installation directory '{installationDirectory.FullName}'");
+            AnsiConsole.WriteLine($"Creating installation directory '{installationDirectory.FullName}'");
             installationDirectory.Create();
         }
 
         return installationDirectory;
     }
 
-    private DirectoryInfo GetProgramDataDirectory()
+    private static DirectoryInfo GetProgramDataDirectory()
     {
         DirectoryInfo programDataDirectory = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)));
         if (!programDataDirectory.Exists)
         {
-            Console.WriteLine($"Creating program data directory '{programDataDirectory.FullName}'");
+            AnsiConsole.WriteLine($"Creating program data directory '{programDataDirectory.FullName}'");
             programDataDirectory.Create();
         }
 
         return programDataDirectory;
-    }
-
-    public bool Install(string appName, string version)
-    {
-        return Install(appName, Version.Parse(version));
-    }
-
-    public bool Install(string appName, Version version)
-    {
-        return Install(new FileInfo(Path.Combine(AppContext.BaseDirectory, Constants.AppSourceFolderName, $"{appName}.{version}.zip")));
     }
 }

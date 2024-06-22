@@ -1,8 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Frank.SimpleInstaller;
+using OperatingSystem = Frank.SimpleInstaller.Models.OperatingSystem;
 
-public static class OperatingSystemDetector
+namespace Frank.SimpleInstaller.Helpers;
+
+public static class OperatingSystemHelper
 {
     public static OperatingSystem GetOperatingSystem()
     {

@@ -1,10 +1,12 @@
 ﻿using System.IO.Compression;
 
-namespace Frank.SimpleInstaller;
+using Frank.SimpleInstaller.Models;
 
-public class PackingService : IPackingService
+namespace Frank.SimpleInstaller.Helpers;
+
+public class PackingHelper
 {
-    public FileInfo Pack(DirectoryInfo sourceDirectory, DirectoryInfo appsDirectory, InstallationMetadata metadata)
+    public static FileInfo Pack(DirectoryInfo sourceDirectory, DirectoryInfo appsDirectory, InstallationMetadata metadata)
     {
         var appName = metadata.SafeName ?? metadata.Name;
         var packageFileName = $"{appName}.{metadata.Version.ToString()}.zip";
@@ -12,7 +14,7 @@ public class PackingService : IPackingService
 
         if (zipFile.Exists)
         {
-            var action = ConsoleMenuFactory.PromptForSelection($"A package with the name '{packageFileName}' already exists. Choose an action:", new List<string> { "Overwrite", "Cancel" });
+            var action = ConsoleMenuHelper.PromptForSelection($"A package with the name '{packageFileName}' already exists. Choose an action:", new List<string> { "Overwrite", "Cancel" });
             if (action == "Cancel")
                 return zipFile;
             zipFile.Delete();

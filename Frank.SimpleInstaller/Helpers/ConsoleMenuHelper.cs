@@ -1,8 +1,8 @@
 ﻿using Spectre.Console;
 
-namespace Frank.SimpleInstaller;
+namespace Frank.SimpleInstaller.Helpers;
 
-public static class ConsoleMenuFactory
+public static class ConsoleMenuHelper
 {
     public static string PromptForSelection(string promptTitle, List<string> options)
     {

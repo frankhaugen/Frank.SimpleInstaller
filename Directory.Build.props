@@ -21,9 +21,9 @@
         <PackageIcon>icon.png</PackageIcon>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://www.github.com/frankhaugen/Frank.DependenciesExplorer</PackageProjectUrl>
+        <PackageProjectUrl>https://www.github.com/frankhaugen/Frank.SimpleInstaller</PackageProjectUrl>
 
-        <RepositoryUrl>https://www.github.com/frankhaugen/Frank.DependenciesExplorer</RepositoryUrl>
+        <RepositoryUrl>https://www.github.com/frankhaugen/Frank.SimpleInstaller</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 

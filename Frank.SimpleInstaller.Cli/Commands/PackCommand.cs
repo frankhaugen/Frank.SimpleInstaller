@@ -15,34 +15,56 @@ public class PackCommand : AsyncCommand<PackCommand.Settings>
     {
         [CommandOption("-s|--source <SOURCE>")]
         [Description("Source directory to pack")]
-        public string? Source { get; set; }
+        public DirectoryInfo? Source { get; set; }
 
         [CommandOption("-o|--output <OUTPUT>")]
-        [Description("Output file path")]
-        public string? Output { get; set; }
+        [Description("Output directory path")]
+        public DirectoryInfo? Output { get; set; }
 
         [CommandOption("-e|--executable <EXECUTABLE>")]
         [Description("Executable filename")]
         public string? ExecutableName { get; set; }
+        
+        [CommandOption("-v|--version <VERSION>")]
+        [Description("Version number")]
+        public Version? Version { get; set; }
+        
+        [CommandOption("-n|--name <NAME>")]
+        [Description("Application name")]
+        public string? Name { get; set; }
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
     {
         AnsiConsole.Write(new FigletText("App Packer").Centered());
         
+        if (settings.Name == null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Application name not provided[/]");
+            string appName = ConsoleMenuHelper.PromptForStringInput("Enter the name of the application to package:");
+            settings.Name = appName;
+        }
+        
+        if (settings.Version == null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Version number not provided[/]");
+            Version version = ConsoleMenuHelper.PromptForVersionInput("Enter the version number for the package:");
+            settings.Version = version;
+        }
+        
         if (settings.Source == null)
         {
             AnsiConsole.MarkupLine("[yellow]Source directory not provided[/]");
             var browser = new FileExplorer();
             var source = await browser.GetFolderPathAsync();
-            settings.Source = source.FullName;
+            settings.Source = source;
         }
         
         if (settings.ExecutableName == null)
         {
             AnsiConsole.MarkupLine("[yellow]Executable name not provided[/]");
             var browser = new FileExplorer();
-            var executable = await browser.GetFilePathAsync(new DirectoryInfo(settings.Source));
+            var executable = await browser.GetFilePathAsync(settings.Source);
             settings.ExecutableName = executable.Name;
         }
         
@@ -51,30 +73,17 @@ public class PackCommand : AsyncCommand<PackCommand.Settings>
             AnsiConsole.MarkupLine("[yellow]Destination directory not provided[/]");
             var browser = new FileExplorer();
             var output = await browser.GetFolderPathAsync();
-            settings.Output = output.FullName;
+            settings.Output = output;
         }
         
-        AnsiConsole.MarkupLine("[green]Packing[/] from {0} to {1}", settings.Source, settings.Output);
+        InstallationMetadata metadata = new InstallationMetadata { Name = settings.Name, Version = settings.Version, ExecutableName = settings.ExecutableName};
         
-        Version version = ConsoleMenuHelper.PromptForVersionInput("Enter the version number for the package:");
-        string appName = ConsoleMenuHelper.PromptForStringInput("Enter the name of the application to package:");
-
-        string? safeAppName = null;
-        if (appName.Any(c => Path.GetInvalidFileNameChars().Contains(c)))
-        {
-            safeAppName = ConsoleMenuHelper.PromptForFilenameInput($"The application name '{appName}' contains invalid characters,({string.Join(", ", Path.GetInvalidFileNameChars())}). Enter a safe name for the package:");
-        }
-        
-        var company = ConsoleMenuHelper.PromptForStringOrNullInput("Enter the name of the company that created the application (optional):");
-        
-        InstallationMetadata metadata = new InstallationMetadata { Name = appName, Version = version, SafeName = safeAppName, Company = company, ExecutableName = settings.ExecutableName};
-        
-        var appsDirectory = new DirectoryInfo(settings.Output);
+        var appsDirectory = settings.Output;
         
         if (!appsDirectory.Exists)
             appsDirectory.Create();
         
-        var sourceDirectory = new DirectoryInfo(settings.Source);
+        var sourceDirectory = settings.Source;
 
         FileInfo result = PackingHelper.Pack(sourceDirectory, appsDirectory, metadata);
         

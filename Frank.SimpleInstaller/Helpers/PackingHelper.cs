@@ -8,7 +8,7 @@ public static class PackingHelper
 {
     public static FileInfo Pack(DirectoryInfo sourceDirectory, DirectoryInfo appsDirectory, InstallationMetadata metadata)
     {
-        var appName = metadata.SafeName ?? metadata.Name;
+        var appName = metadata.Name;
         var packageFileName = $"{appName}.{metadata.Version.ToString()}.zip";
         var zipFile = new FileInfo(Path.Combine(appsDirectory.FullName, packageFileName));
 

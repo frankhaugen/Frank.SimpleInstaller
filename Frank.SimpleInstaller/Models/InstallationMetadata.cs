@@ -21,16 +21,6 @@ public class InstallationMetadata
     public string ExecutableName { get; set; }
 
     /// <summary>
-    /// If the name contains characters that are not allowed in a folder name, this property contains a safe version of the name.
-    /// </summary>
-    public string? SafeName { get; set; }
-
-    /// <summary>
-    /// The company that owns the installation. If not specified, the installation will be placed in the root of the start menu.
-    /// </summary>
-    public string? Company { get; set; }
-
-    /// <summary>
     /// Returns a JSON representation of the metadata.
     /// </summary>
     /// <returns></returns>

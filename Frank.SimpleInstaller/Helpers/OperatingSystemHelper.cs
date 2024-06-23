@@ -28,14 +28,14 @@ public static class OperatingSystemHelper
 
     public static DirectoryInfo GetInstallationDirectory(InstallationMetadata metadata, bool createIfNotExists = true)
     {
-        var directory = new DirectoryInfo(Path.Combine(GetCommonApplicationDataDirectory().FullName, metadata.SafeName ?? metadata.Name));
+        var directory = new DirectoryInfo(Path.Combine(GetCommonApplicationDataDirectory().FullName, metadata.Name));
         if (createIfNotExists && !directory.Exists) directory.Create();
         return directory;
     }
 
     public static DirectoryInfo GetStartMenuApplicationDirectory(InstallationMetadata metadata, bool createIfNotExists = true)
     {
-        DirectoryInfo appDirectory = new(Path.Combine(GetStartMenuProgramsDirectory().FullName, metadata.SafeName ?? metadata.Name));
+        DirectoryInfo appDirectory = new(Path.Combine(GetStartMenuProgramsDirectory().FullName, metadata.Name));
         if (createIfNotExists && !appDirectory.Exists) appDirectory.Create();
         return appDirectory;
     }

@@ -1,4 +1,6 @@
-﻿using Frank.SimpleInstaller.Cli.Commands;
+﻿using System.Globalization;
+
+using Frank.SimpleInstaller.Cli.Commands;
 using Frank.SimpleInstaller.Cli.DependencyInjection;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +21,12 @@ app.Configure(config =>
     config.AddCommand<PackCommand>("pack");
     config.AddCommand<InstallCommand>("install");
     config.AddCommand<UninstallCommand>("uninstall");
+    config.AddCommand<DefaultCommand>("default");
+    
+    config.Settings.Culture = CultureInfo.CurrentCulture;
 });
+
+app.SetDefaultCommand<DefaultCommand>();
 
 await app.RunAsync(args);
 

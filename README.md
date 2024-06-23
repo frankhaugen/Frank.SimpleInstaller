@@ -27,6 +27,14 @@ dotnet tool install --global Frank.SimpleInstaller.Cli
 
 Simple usage means that you don't provide any additional configuration. The tool will use prompt the user for the necessary information.
 
+#### Running the following command to start and be prompted what command to run:
+
+```bash
+dotnet simple-installer
+```
+
+![Screenshot_DefaultScreen.png](Assets/Screenshot_DefaultScreen.png)
+
 #### Running the following command to package an application:
 
 ```bash

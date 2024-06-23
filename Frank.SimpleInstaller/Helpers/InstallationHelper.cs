@@ -11,16 +11,16 @@ public static class InstallationHelper
         var installationDirectory = OperatingSystemHelper.GetInstallationDirectory(metadata);
         var startMenuDirectory = OperatingSystemHelper.GetStartMenuApplicationDirectory(metadata, false);
         
+        if (startMenuDirectory.Exists)
+        {
+            startMenuDirectory.Delete(true);
+        }
+        
         if (installationDirectory.Exists)
         {
             installationDirectory.Delete(true);
         }
         
-        if (startMenuDirectory.Exists)
-        {
-            startMenuDirectory.Delete(true);
-        }
-
         return true;
     }
     
@@ -51,7 +51,7 @@ public static class InstallationHelper
 
         IEnumerable<ZipArchiveEntry> zipSourceDirectoryEntries = GetZipSourceDirectory(zip);
 
-        FileInfo exexutable = new FileInfo(Path.GetTempFileName());
+        FileInfo exexutable = new FileInfo(Path.Combine(installationDirectory.FullName, metadata.ExecutableName));
 
         foreach (ZipArchiveEntry zipSourceDirectoryEntry in zipSourceDirectoryEntries)
         {
@@ -62,11 +62,6 @@ public static class InstallationHelper
                 continue;
             
             zipSourceDirectoryEntry.ExtractToFile(destinationPath, true);
-
-            if (zipSourceDirectoryEntry.FullName.EndsWith(".exe"))
-            {
-                exexutable = new FileInfo(destinationPath);
-            }
         }
 
         FileInfo startMenuShortcut = new FileInfo(Path.Combine(startMenuDirectory.FullName, $"{metadata.Name}.lnk"));
@@ -76,9 +71,7 @@ public static class InstallationHelper
             startMenuShortcut.Delete();
         }
 
-        FileInfo startMenuShortcutTarget = new FileInfo(Path.Combine(installationDirectory.FullName, Constants.SourceFolderName, exexutable.FullName));
-
-        ShortcutHelper.CreateShortcut(startMenuShortcutTarget, startMenuShortcut);
+        ShortcutHelper.CreateShortcut(exexutable, startMenuShortcut);
 
         return true;
     }
@@ -92,5 +85,29 @@ public static class InstallationHelper
         }
 
         return sourceEntry;
+    }
+
+    public static Dictionary<string, DirectoryInfo> GetInstalledApplications()
+    {
+        var commonApplicationDataDirectory = OperatingSystemHelper.GetCommonApplicationDataDirectory();
+        var installationDirectories = commonApplicationDataDirectory.GetDirectories();
+        var installedApplications = new Dictionary<string, DirectoryInfo>();
+
+        foreach (var installationDirectory in installationDirectories)
+        {
+            var metadataFile = new FileInfo(Path.Combine(installationDirectory.FullName, Constants.MetadataFilename));
+            if (metadataFile.Exists)
+            {
+                using var fileStream = metadataFile.OpenRead();
+                var metadata = InstallationMetadata.Load(fileStream);
+                fileStream.Close();
+                if (metadata is not null)
+                {
+                    installedApplications.Add(metadata.Name, installationDirectory);
+                }
+            }
+        }
+
+        return installedApplications;
     }
 }

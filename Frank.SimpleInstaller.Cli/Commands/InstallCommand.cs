@@ -24,7 +24,7 @@ public class InstallCommand : AsyncCommand<InstallCommand.Settings>
         
         if (settings.Package == null)
         {
-            AnsiConsole.MarkupLine("[orange]Source package not provided[/]");
+            AnsiConsole.MarkupLine("[yellow]Source package not provided[/]");
             var browser = new FileExplorer();
             var source = await browser.GetFilePathAsync();
             settings.Package = source.FullName;
@@ -58,7 +58,8 @@ public class InstallCommand : AsyncCommand<InstallCommand.Settings>
             AnsiConsole.MarkupLine("[red]Installation failed[/]");
         }
         
-        await Task.Delay(1000); // Delay for 1 second
+        AnsiConsole.MarkupLine("[yellow]Press any key to exit...[/]");
+        Console.ReadKey();
         
         return 0;
     }

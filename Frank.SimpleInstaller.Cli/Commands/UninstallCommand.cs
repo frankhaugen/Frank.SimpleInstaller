@@ -1,5 +1,6 @@
 using System.ComponentModel;
 
+using Frank.SimpleInstaller.Cli.Helpers;
 using Frank.SimpleInstaller.Helpers;
 using Frank.SimpleInstaller.Models;
 
@@ -14,19 +15,68 @@ public class UninstallCommand : AsyncCommand<UninstallCommand.Settings>
     {
         [CommandOption("-t|--target <TARGET>")]
         [Description("Target application to uninstall")]
-        public string Target { get; set; }
+        public string? Target { get; set; }
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
     {
-        // Implement your uninstall logic here
+        AnsiConsole.Write(new FigletText("App Uninstaller").Centered());
+        
+        if (settings.Target == null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Target application name not provided[/]");
+            
+            // Create selection menu for installed applications
+            var installedApplications = InstallationHelper.GetInstalledApplications();
+            
+            var selection = AnsiConsole.Prompt(new SelectionPrompt<KeyValuePair<string, DirectoryInfo>>()
+                .Title("Select an application to uninstall")
+                .PageSize(10)
+                .AddChoices(installedApplications)
+                .UseConverter(pair => pair.Key)
+            );
+            
+            settings.Target = selection.Key;
+        }
+        
         AnsiConsole.MarkupLine("[green]Uninstalling[/] from {0}", settings.Target);
         
-        var installationDirectory = OperatingSystemHelper.GetInstallationDirectory(settings.Target);
-        var metadataFile = new FileInfo(Path.Combine(installationDirectory.FullName, Constants.MetadataFilename));
-        var metadata = InstallationMetadata.Load(metadataFile.OpenRead());
-        InstallationHelper.Uninstall(metadata!);
+        var exitCode = 0;
         
-        return 0;
+        try
+        {
+            InstallationMetadata metadata = GetInstallationMetadata(settings);
+            var success = InstallationHelper.Uninstall(metadata);
+
+            if (success)
+            {
+                AnsiConsole.MarkupLine("[green]Uninstallation successful[/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Uninstallation failed[/]");
+            }
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.MarkupLine("[red]Uninstallation failed[/]");
+            AnsiConsole.WriteException(e);
+            exitCode = 1;
+        }
+        
+        AnsiConsole.MarkupLine("[yellow]Press any key to exit[/]");
+        Console.ReadKey();
+        
+        return exitCode;
+    }
+
+    private static InstallationMetadata GetInstallationMetadata(Settings settings)
+    {
+        var installationDirectory = OperatingSystemHelper.GetInstallationDirectory(settings.Target!);
+        var metadataFile = new FileInfo(Path.Combine(installationDirectory.FullName, Constants.MetadataFilename));
+        using var fileStream = metadataFile.OpenRead();
+        var metadata = InstallationMetadata.Load(fileStream);
+        fileStream.Close();
+        return metadata ?? throw new Exception("Failed to load installation metadata");
     }
 }

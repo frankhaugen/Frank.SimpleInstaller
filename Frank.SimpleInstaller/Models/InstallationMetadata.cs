@@ -14,6 +14,11 @@ public class InstallationMetadata
     /// The name of the installation.
     /// </summary>
     public string Name { get; set; }
+    
+    /// <summary>
+    /// The executable name.
+    /// </summary>
+    public string ExecutableName { get; set; }
 
     /// <summary>
     /// If the name contains characters that are not allowed in a folder name, this property contains a safe version of the name.

@@ -18,7 +18,8 @@ public class InstallationHelperTests
         var metadata = new InstallationMetadata
         {
             Name = "Test1",
-            Version = new Version(1, 0, 0)
+            Version = new Version(1, 0, 0),
+            ExecutableName = "Test1.exe"
         };
 
         var metadataEntry = zip.CreateEntry(Constants.MetadataFilename);
@@ -64,7 +65,8 @@ public class InstallationHelperTests
         var metadata = new InstallationMetadata
         {
             Name = "Test3",
-            Version = new Version(1, 0, 0)
+            Version = new Version(1, 0, 0),
+            ExecutableName = "Test3.exe"
         };
 
         var metadataEntry = zip.CreateEntry(Constants.MetadataFilename);

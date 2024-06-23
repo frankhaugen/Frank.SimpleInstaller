@@ -13,16 +13,16 @@ public class UninstallCommand : AsyncCommand<UninstallCommand.Settings>
 {
     public class Settings : CommandSettings
     {
-        [CommandOption("-t|--target <TARGET>")]
+        [CommandOption("-n|--name <NAME>")]
         [Description("Target application to uninstall")]
-        public string? Target { get; set; }
+        public string? Name { get; set; }
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
     {
         AnsiConsole.Write(new FigletText("App Uninstaller").Centered());
         
-        if (settings.Target == null)
+        if (settings.Name == null)
         {
             AnsiConsole.MarkupLine("[yellow]Target application name not provided[/]");
             
@@ -36,10 +36,10 @@ public class UninstallCommand : AsyncCommand<UninstallCommand.Settings>
                 .UseConverter(pair => pair.Key)
             );
             
-            settings.Target = selection.Key;
+            settings.Name = selection.Key;
         }
         
-        AnsiConsole.MarkupLine("[green]Uninstalling[/] from {0}", settings.Target);
+        AnsiConsole.MarkupLine("[green]Uninstalling[/] from {0}", settings.Name);
         
         var exitCode = 0;
         
@@ -72,7 +72,7 @@ public class UninstallCommand : AsyncCommand<UninstallCommand.Settings>
 
     private static InstallationMetadata GetInstallationMetadata(Settings settings)
     {
-        var installationDirectory = OperatingSystemHelper.GetInstallationDirectory(settings.Target!);
+        var installationDirectory = OperatingSystemHelper.GetInstallationDirectory(settings.Name!);
         var metadataFile = new FileInfo(Path.Combine(installationDirectory.FullName, Constants.MetadataFilename));
         using var fileStream = metadataFile.OpenRead();
         var metadata = InstallationMetadata.Load(fileStream);

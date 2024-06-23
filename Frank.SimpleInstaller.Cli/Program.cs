@@ -22,3 +22,6 @@ app.Configure(config =>
 });
 
 await app.RunAsync(args);
+
+AnsiConsole.MarkupLine("Goodbye!");
+Console.ReadLine();

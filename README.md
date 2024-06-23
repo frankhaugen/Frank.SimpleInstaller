@@ -49,4 +49,42 @@ dotnet simple-installer uninstall
 
 Advanced usage means that you provide arguments to the tool to avoid user input (some is still required at the moment).
 
-> TODO: Add documentation for advanced usage.
+#### Running the following command to package an application:
+
+```bash
+dotnet simple-installer pack --source "C:\temp\MyApp" --output "C:\temp" --executable "MyApp.exe" --version "1.0.0" --name "MyApp"
+```
+
+```bash
+OPTIONS:
+    -h, --help                       Prints help information
+    -s, --source <SOURCE>            Source directory to pack
+    -o, --output <OUTPUT>            Output directory path
+    -e, --executable <EXECUTABLE>    Executable filename
+    -v, --version <VERSION>          Version number
+    -n, --name <NAME>                Application name
+```
+
+#### Running the following command to install an application:
+
+```bash
+dotnet simple-installer install --package "C:\temp\MyApp.1.0.0.zip"
+```
+
+```bash
+OPTIONS:
+    -h, --help                 Prints help information
+    -p, --package <PACKAGE>    Package file to install
+```
+
+#### Running the following command to uninstall an application:
+
+```bash
+dotnet simple-installer uninstall --name "MyApp"
+```
+
+```bash
+OPTIONS:
+    -h, --help           Prints help information
+    -n, --name <NAME>    Target application to uninstall
+```

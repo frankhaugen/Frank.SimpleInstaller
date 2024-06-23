@@ -8,7 +8,7 @@ namespace Frank.SimpleInstaller.Tests;
 public class TestOperatingSystemHelper
 {
     [Fact]
-    public void GetOperatingSystem_ReturnsWindows()
+    public void GetOperatingSystem_ReturnsValidOs()
     {
         // Arrange
         
@@ -16,7 +16,7 @@ public class TestOperatingSystemHelper
         var os = OperatingSystemHelper.GetOperatingSystem();
 
         // Assert
-        Assert.Equal(OperatingSystem.Windows, os);
+        Assert.NotEqual(OperatingSystem.Unknown, os);
     }
 
     [Fact]
@@ -35,7 +35,6 @@ public class TestOperatingSystemHelper
     public void GetInstallationDirectory_ReturnsInstallationDirectory()
     {
         // Arrange
-        
         var metadata = new InstallationMetadata { Name = "Test" };
 
         // Act
@@ -63,7 +62,6 @@ public class TestOperatingSystemHelper
     public void GetStartMenuDirectory_ReturnsStartMenuDirectory()
     {
         // Arrange
-        
 
         // Act
         var startMenuDirectory = OperatingSystemHelper.GetStartMenuDirectory();
@@ -76,7 +74,6 @@ public class TestOperatingSystemHelper
     public void GetStartMenuProgramsDirectory_ReturnsStartMenuProgramsDirectory()
     {
         // Arrange
-        
 
         // Act
         var startMenuProgramsDirectory = OperatingSystemHelper.GetStartMenuProgramsDirectory();

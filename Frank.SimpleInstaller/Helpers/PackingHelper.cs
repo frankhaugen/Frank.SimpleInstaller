@@ -4,7 +4,7 @@ using Frank.SimpleInstaller.Models;
 
 namespace Frank.SimpleInstaller.Helpers;
 
-public class PackingHelper
+public static class PackingHelper
 {
     public static FileInfo Pack(DirectoryInfo sourceDirectory, DirectoryInfo appsDirectory, InstallationMetadata metadata)
     {
@@ -12,13 +12,7 @@ public class PackingHelper
         var packageFileName = $"{appName}.{metadata.Version.ToString()}.zip";
         var zipFile = new FileInfo(Path.Combine(appsDirectory.FullName, packageFileName));
 
-        if (zipFile.Exists)
-        {
-            var action = ConsoleMenuHelper.PromptForSelection($"A package with the name '{packageFileName}' already exists. Choose an action:", new List<string> { "Overwrite", "Cancel" });
-            if (action == "Cancel")
-                return zipFile;
-            zipFile.Delete();
-        }
+        if (zipFile.Exists) throw new IOException($"File '{zipFile.FullName}' already exists");
 
         using var zipArchive = ZipFile.Open(zipFile.FullName, ZipArchiveMode.Create);
 

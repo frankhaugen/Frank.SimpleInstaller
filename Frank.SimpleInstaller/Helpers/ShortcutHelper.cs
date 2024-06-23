@@ -1,33 +1,22 @@
 ﻿using System.Diagnostics;
 
-using Spectre.Console;
-
 using OperatingSystem = Frank.SimpleInstaller.Models.OperatingSystem;
 
 namespace Frank.SimpleInstaller.Helpers;
 
 public static class ShortcutHelper
 {
-    public static void CreateShortcut(FileInfo originalFilePath, FileInfo linkPath)
-    {
-        switch (OperatingSystemHelper.GetOperatingSystem())
+    public static bool CreateShortcut(FileInfo originalFilePath, FileInfo linkPath) =>
+        OperatingSystemHelper.GetOperatingSystem() switch
         {
-            case OperatingSystem.Windows:
-                CreateWindowsShortcut(originalFilePath, linkPath);
-                break;
-            case OperatingSystem.MacOS:
-                CreateMacAlias(originalFilePath, linkPath);
-                break;
-            case OperatingSystem.Linux:
-                CreateLinuxSymbolicLink(originalFilePath, linkPath);
-                break;
-            case OperatingSystem.Unknown:
-            default:
-                break;
-        }
-    }
+            OperatingSystem.Windows => CreateWindowsShortcut(originalFilePath, linkPath),
+            OperatingSystem.MacOS => CreateMacAlias(originalFilePath, linkPath),
+            OperatingSystem.Linux => CreateLinuxSymbolicLink(originalFilePath, linkPath),
+            OperatingSystem.Unknown => throw new PlatformNotSupportedException("Creating shortcuts is not supported on this platform"),
+            _ => throw new PlatformNotSupportedException("Creating shortcuts is not supported on this platform")
+        };
 
-    private static void CreateMacAlias(FileInfo originalFilePath, FileInfo aliasPath)
+    private static bool CreateMacAlias(FileInfo originalFilePath, FileInfo aliasPath)
     {
         Process process = new()
         {
@@ -42,9 +31,11 @@ public static class ShortcutHelper
         };
         process.Start();
         process.WaitForExit();
+        
+        return process.ExitCode == 0;
     }
 
-    private static void CreateLinuxSymbolicLink(FileInfo originalFilePath, FileInfo linkPath)
+    private static bool CreateLinuxSymbolicLink(FileInfo originalFilePath, FileInfo linkPath)
     {
         Process process = new()
         {
@@ -59,9 +50,11 @@ public static class ShortcutHelper
         };
         process.Start();
         process.WaitForExit();
+        
+        return process.ExitCode == 0;
     }
 
-    private static void CreateWindowsShortcut(FileInfo originalFilePath, FileInfo shortcutPath)
+    private static bool CreateWindowsShortcut(FileInfo originalFilePath, FileInfo shortcutPath)
     {
         // string shortcutName = Path.GetFileNameWithoutExtension(originalFilePath.FullName);
 
@@ -86,13 +79,6 @@ public static class ShortcutHelper
         string output = process.StandardOutput.ReadToEnd();
         process.WaitForExit();
         
-        if (process.ExitCode != 0)
-        {
-            AnsiConsole.WriteLine($"Failed to create shortcut. Exit code: {process.ExitCode}. Output: {output}");
-        }
-        else
-        {
-            AnsiConsole.WriteLine("Shortcut created successfully.");
-        }
+        return process.ExitCode == 0;
     }
 }

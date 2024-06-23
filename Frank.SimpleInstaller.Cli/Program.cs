@@ -1,8 +1,4 @@
-﻿using System.Reflection;
-
-using Frank.SimpleInstaller;
-using Frank.SimpleInstaller.Cli.Actions;
-using Frank.SimpleInstaller.Cli.Commands;
+﻿using Frank.SimpleInstaller.Cli.Commands;
 using Frank.SimpleInstaller.Cli.DependencyInjection;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -14,11 +10,6 @@ AnsiConsole.Profile.Encoding = System.Text.Encoding.UTF8;
 
 var services = new ServiceCollection();
 
-services.AddSingleton<IAction, InstallAction>();
-services.AddSingleton<IAction, PackAction>();
-services.AddSingleton<IAction, UninstallAction>();
-services.AddSingleton<IAction, ExitAction>();
-
 var registrar = new TypeRegistrar(services);
 
 var app = new CommandApp(registrar);
@@ -29,7 +20,5 @@ app.Configure(config =>
     config.AddCommand<InstallCommand>("install");
     config.AddCommand<UninstallCommand>("uninstall");
 });
-
-app.SetDefaultCommand<MenuCommand>();
 
 await app.RunAsync(args);

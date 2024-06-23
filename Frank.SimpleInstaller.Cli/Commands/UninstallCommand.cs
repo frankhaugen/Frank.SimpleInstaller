@@ -1,6 +1,7 @@
 using System.ComponentModel;
 
 using Frank.SimpleInstaller.Helpers;
+using Frank.SimpleInstaller.Models;
 
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -21,7 +22,10 @@ public class UninstallCommand : AsyncCommand<UninstallCommand.Settings>
         // Implement your uninstall logic here
         AnsiConsole.MarkupLine("[green]Uninstalling[/] from {0}", settings.Target);
         
-        InstallationHelper.Uninstall(settings.Target);
+        var installationDirectory = OperatingSystemHelper.GetInstallationDirectory(settings.Target);
+        var metadataFile = new FileInfo(Path.Combine(installationDirectory.FullName, Constants.MetadataFilename));
+        var metadata = InstallationMetadata.Load(metadataFile.OpenRead());
+        InstallationHelper.Uninstall(metadata!);
         
         return 0;
     }

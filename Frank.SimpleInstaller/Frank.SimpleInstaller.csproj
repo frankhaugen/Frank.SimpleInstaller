@@ -2,15 +2,8 @@
 
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <Description>Simple installer for .NET Core console applications. Built with Spectre.Console.</Description>
-        <PackageTags>Simple, Installer, Console, Spectre, Windows, .NET, .NET Core, .NET 8</PackageTags>
+        <Description>Simple installer for .NET Core console applications.</Description>
+        <PackageTags>Simple, Installer, Linux, MacOS, Windows, .NET, .NET Core, .NET 8</PackageTags>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Spectre.Console" Version="0.48.0"/>
-        <PackageReference Include="Spectre.Console.Analyzer" Version="0.49.1">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
 </Project>

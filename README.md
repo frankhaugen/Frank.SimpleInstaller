@@ -41,17 +41,23 @@ dotnet simple-installer
 dotnet simple-installer pack
 ```
 
+![Screenshot_PackScreen.png](Assets/Screenshot_PackScreen.png)
+
 #### Running the following command to install an application:
 
 ```bash
 dotnet simple-installer install
 ```
 
+![Screenshot_InstallScreen.png](Assets/Screenshot_InstallScreen.png)
+
 #### Running the following command to uninstall an application:
 
 ```bash
 dotnet simple-installer uninstall
 ```
+
+![Screenshot_UninstallScreen.png](Assets/Screenshot_UninstallScreen.png)
 
 ## Advanced Usage
 

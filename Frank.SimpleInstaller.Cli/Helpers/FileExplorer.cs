@@ -2,7 +2,7 @@ using Frank.SimpleInstaller.Helpers;
 
 using Spectre.Console;
 
-namespace Frank.SimpleInstaller
+namespace Frank.SimpleInstaller.Cli.Helpers
 {
     public class FileExplorer
     {

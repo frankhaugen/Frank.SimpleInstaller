@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace Frank.SimpleInstaller.Helpers;
+namespace Frank.SimpleInstaller.Cli.Helpers;
 
 public static class ConsoleMenuHelper
 {

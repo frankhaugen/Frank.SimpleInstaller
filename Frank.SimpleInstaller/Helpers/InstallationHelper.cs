@@ -55,8 +55,12 @@ public static class InstallationHelper
 
         foreach (ZipArchiveEntry zipSourceDirectoryEntry in zipSourceDirectoryEntries)
         {
-            var sourceEntryPath = zipSourceDirectoryEntry.FullName.Replace(Constants.SourceFolderName, string.Empty).TrimStart('\\');
+            var sourceEntryPath = zipSourceDirectoryEntry.FullName.Replace(Constants.SourceFolderName, string.Empty).TrimStart('\\').TrimStart('/');
             string destinationPath = Path.Combine(installationDirectory.FullName, sourceEntryPath);
+
+            if (destinationPath == installationDirectory.FullName)
+                continue;
+            
             zipSourceDirectoryEntry.ExtractToFile(destinationPath, true);
 
             if (zipSourceDirectoryEntry.FullName.EndsWith(".exe"))

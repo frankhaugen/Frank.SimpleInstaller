@@ -1,5 +1,6 @@
 using System.ComponentModel;
 
+using Frank.SimpleInstaller.Cli.Helpers;
 using Frank.SimpleInstaller.Helpers;
 using Frank.SimpleInstaller.Models;
 

@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
+Console.Clear();
+
 AnsiConsole.Profile.Encoding = System.Text.Encoding.UTF8;
 
 var services = new ServiceCollection();
@@ -18,6 +20,7 @@ var app = new CommandApp(registrar);
 
 app.Configure(config =>
 {
+    config.AddCommand<BuildCommand>("build");
     config.AddCommand<PackCommand>("pack");
     config.AddCommand<InstallCommand>("install");
     config.AddCommand<UninstallCommand>("uninstall");

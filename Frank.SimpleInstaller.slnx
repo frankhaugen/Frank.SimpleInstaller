@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="LICENSE" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="Frank.SimpleInstaller.Cli/Frank.SimpleInstaller.Cli.csproj" />
+  <Project Path="Frank.SimpleInstaller.Tests/Frank.SimpleInstaller.Tests.csproj" />
+  <Project Path="Frank.SimpleInstaller/Frank.SimpleInstaller.csproj" />
+</Solution>
